@@ -99,20 +99,24 @@ function App() {
         <input name='max_input' className="max_input" placeholder='Max Number' onChange={changeMax} value={bingoMax} type="number"/>
       </div>
       <div className='main_section'>
+        <div className='call_controls'>
         {
           isDone ? (<></>):(
+            
           <div className='call_section'>
+            
             {inManualMode ? 
               (<button className="btn" onClick={()=>{getNewBingoCall()}}>New</button>):
               
               (<div className='timer_section'><p>Call in: {time} seconds</p><button className="btn" onClick={() => setIsPaused((prevPaused) => !prevPaused)}>{isPaused ? "Resume": "Pause"}</button></div>)
             }
-            <div className='call'>
-              {bingoCall}
-            </div>
           </div>)
         }
         <button className="btn start_btn" onClick={()=>{handleStopStartClick()}}>{isDone ? "Start": "Stop"}</button>
+        </div>
+        <div className='call'>
+          {bingoCall}
+        </div>
       </div>
       <div className='history_container'>
         <div className='last_two_calls_section'>

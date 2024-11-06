@@ -8,12 +8,14 @@ body{
 .home{
   width: auto;
   max-width: 70%;
-  margin: auto;
-  height: 80vh;
-  background-color: rgb(109, 109, 18);
-  color: rgb(12, 80, 125);
+  height: 85vh;
+  padding: 3em;
+  margin:auto;
+  background-color: #4e4e63;
+  color: rgb(114, 155, 182);
   border-radius: 25px;
-  padding:3em;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .header, .max_input{
@@ -27,25 +29,35 @@ body{
   height: 50px;
   border-radius: 15px;
   cursor: pointer;
-  background-color: rgb(41, 70, 89);;
-  color:aqua
+  background-color: rgb(41, 70, 89);
+  color:aqua;
+  border: none;
+  margin: 0.5em
 }
 .timer_section{
   display: flex;
 }
 .main_section{
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.call_controls{
+  display: flex;
   flex-direction: row;
   justify-content: center;
 }
 .call{
-  font-size: 50px;
-
+  font-size: 60px;
+  color:#3cff0b;
+  text-align: center;
 }
 .settings{
   display: flex;
   justify-content: space-between;
   width: 100%;
+  align-items: center;
+
 }
 .time_range_section{
   display: flex;
@@ -93,19 +105,31 @@ body{
   width: 100%;
   text-align: center;
   border-bottom: black solid 0.2em;
+  font-size: 24px;
+}
+.history_item{
+  font-size: 20px;
+  border-bottom: #3cff0b solid 0.02em;
 }
 input[type='range'] {
   -webkit-appearance: none !important;
   background:#ffee00;
-  height:15px;
-  border-radius:15px;
+  height: 20px;
+  border-radius: 20px;
 }
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none !important;
   background:purple;
-  height:20px;
-  width:20px;
+  cursor: pointer;
+  height:18px;
+  width:18px;
   border-radius: 180px;
+}
+.range_input{
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 /*-----------------For the toggle switch----------*/
 .switch {
@@ -126,7 +150,7 @@ input[type='range']::-webkit-slider-thumb {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #3834ff;
+  background-color: #3cff0b;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -160,8 +184,25 @@ input:checked + .slider:before {
 }/*-----------------------------------------*/
 
 
-@media  screen and(max-width: 769px) {
+@media screen and (max-width: 769px) {
   .settings{
     flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    padding: 0;
+    margin: 0;
+  }
+  .mode_section{
+    text-align: center;
+  }
+  .home{
+    align-self: center;
+    margin: auto;
+    overflow-y: auto;
+    overflow-x:  hidden;
+  }
+  .call{
+    width: 100%;
+    text-align: center;
   }
 }
