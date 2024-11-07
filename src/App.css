@@ -7,11 +7,12 @@ body{
 }
 .home{
   width: auto;
+  min-width: 50vw;
   max-width: 70%;
   height: 85vh;
   padding: 3em;
   margin:auto;
-  background-color: #4e4e63;
+  background-color: #2b2b5a;
   color: rgb(114, 155, 182);
   border-radius: 25px;
   overflow-y: auto;
@@ -23,6 +24,7 @@ body{
   width: 70%;
   margin: auto;
   text-align: center;
+  color:#3cff0b;
 }
 .btn{
   width: 100px;
@@ -42,6 +44,12 @@ body{
   flex-direction: column;
   justify-content: center;
 }
+.mode_section{
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  
+}
 .call_controls{
   display: flex;
   flex-direction: row;
@@ -57,7 +65,9 @@ body{
   justify-content: space-between;
   width: 100%;
   align-items: center;
-
+  border-bottom: #ffee00 solid 0.1em;
+  padding: 10px;
+  font-size: 24px;
 }
 .time_range_section{
   display: flex;
@@ -109,7 +119,7 @@ body{
 }
 .history_item{
   font-size: 20px;
-  border-bottom: #3cff0b solid 0.02em;
+  border-bottom: #3cff0b solid 0.01em;
 }
 input[type='range'] {
   -webkit-appearance: none !important;
@@ -125,12 +135,7 @@ input[type='range']::-webkit-slider-thumb {
   width:18px;
   border-radius: 180px;
 }
-.range_input{
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
+
 /*-----------------For the toggle switch----------*/
 .switch {
   position: relative;
@@ -150,7 +155,7 @@ input[type='range']::-webkit-slider-thumb {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #3cff0b;
+  background-color: #ffee00;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -188,9 +193,11 @@ input:checked + .slider:before {
   .settings{
     flex-direction: column;
     align-items: center;
-    gap: 2em;
+    gap: 0.5em;
     padding: 0;
     margin: 0;
+    color:#3cff0b;
+    font-size: 24px;
   }
   .mode_section{
     text-align: center;
