@@ -22,20 +22,19 @@ function App() {
   const [time, setTime] = useState(chosenTime);//time used in timer to display
 
   let bingoHistorySet = new Set(possCombos);
-  let thisi = 0;
-  if(thisi = 0){console.log(bingoHistorySet);
-     thisi++;}
   
   useEffect(() => {
     if(!customBingo) setBingoMax(75);//if user changes to standard, set max number to 75
     else setBingoMax(30);//otherwise set max to 30
 
-    if (isDone || inManualMode) {//if user clicks stop or change to manual mode
+    if (isDone || inManualMode) {//if user clicks stop, change to manual mode
       setBingoHistory([]);       //clear the history array
       setBingoCall("");          //clear the current call
       setTime(chosenTime);       //reset the time to whatever the input says
+      setIsPaused(false);
       bingoHistorySet.clear();
       bingoHistorySet = new Set(possCombos);
+      
       return;
     }
     const intervalId = setInterval(() => {   //timer
@@ -55,30 +54,43 @@ function App() {
     return () => clearInterval(intervalId);       //stop timer instance
   }, [isDone, inManualMode, isPaused, chosenTime, customBingo]);
 
-useEffect(() => {
-
-}, [customBingo])
-
   const handleChosenTimeChange = (e) => { //set timer seconds 
     setChosenTime(e.target.value);
   }
 
   const handleModeChange = (e) => { //switch between custom bingo and standard
-    setCustomBingo(e.target.checked);
+    setCustomBingo(e.target.checked);  
+    if(!isDone){
+      handleStopStartClick();
+    }  
   }
   const handleManualChange = (e) =>{//switch between manual and auto
     setInManualMode(e.target.checked);
+    if(!isDone){
+      handleStopStartClick();
+    } 
     //setIsDone(e.target.checked);//Stop the auto timer when switching to manual mode
   }
   const changeMax = (e) => { //change max call number
     setBingoMax(e.target.value);
-    //console.log(e.target.value);
   }
 
   const handleStopStartClick = () => {  //stops current session
-    setIsDone((prevIsDone) => !prevIsDone);
+    //setIsDone((prevIsDone) => !prevIsDone);
     //setBingoHistory([]);
     //setBingoCall("");
+    setShowHistory(false);
+    setIsDone((prevIsDone) => {
+      const nextIsDone = !prevIsDone;
+      if (!nextIsDone) { 
+        // Reset only when game is starting
+        setTime(chosenTime);
+        setBingoHistory([]);
+        setBingoCall("");
+        bingoHistorySet = new Set(possCombos);
+      }
+      return nextIsDone;
+    });
     setShowHistory(false);
   }
 
@@ -121,9 +133,14 @@ useEffect(() => {
       call = `${letter}${randy}`;
       if(bingoHistorySet.has(call)){
         //console.log(call + " is not in the call history\n" + bingoHistory);
-        setBingoCall(call);
-        setBingoHistory((prevHistory) => [...prevHistory, call]);
-        bingoHistorySet.delete(call);
+        if(bingoHistory.includes(call)){
+          getNewBingoCall();
+        }else{
+          setBingoCall(call);
+          setBingoHistory((prevHistory) => [...prevHistory, call]);
+          bingoHistorySet.delete(call);
+        }
+        
         //console.log("Deleted: ", call);
       }else if(bingoHistorySet.size >= 1){
         //console.log(call + " was not in the set. Getting a new call");
@@ -154,11 +171,17 @@ useEffect(() => {
             </label>
           </div>
         </div>
-              
-        <div className='time_range_section'>
-          <label htmlFor='time_range'>Call Time: {chosenTime} seconds</label>
-          <input type='range' className="range_input" id="time_range" value={chosenTime} onChange={handleChosenTimeChange} min="1" max="10"/>
-        </div>
+
+        {
+
+          inManualMode ? (<></>):(
+            <div className='time_range_section'>
+            <label htmlFor='time_range'>Call Time: {chosenTime} seconds</label>
+            <input type='range' className="range_input" id="time_range" value={chosenTime} onChange={handleChosenTimeChange} min="1" max="10"/>
+          </div>
+          )
+        } 
+        
       </section>
       
     
@@ -179,7 +202,7 @@ useEffect(() => {
           <div className='call_section'>
             
             {inManualMode ? 
-              (<button className="btn" onClick={()=>{getNewBingoCall()}}>New</button>):
+              (<button className="btn" onClick={()=>{getNewBingoCall()}}>New Call</button>):
               
               (<div className='timer_section'><p>Call in: {time} seconds</p><button className="btn" onClick={() => setIsPaused((prevPaused) => !prevPaused)}>{isPaused ? "Resume": "Pause"}</button></div>)
             }
@@ -191,7 +214,10 @@ useEffect(() => {
           {bingoCall}
         </div>
       </div>
-      <div className='history_container'>
+      {
+        isDone ? (<></>):(
+
+          <div className='history_container'>
         <div className='last_two_calls_section'>
           <p className='l'>{bingoHistory[bingoHistory.length - 2] || ""}</p>
           <p className='s'>{bingoHistory[bingoHistory.length - 3] || ""}</p>
@@ -208,15 +234,23 @@ useEffect(() => {
           }
         </div> 
       </div>
+        )
+      }
+      
       <div className='info_section'>
+        <p><b className='bold_info'>Start Button</b>: Starts a new game. When clicked and in manual mode a button "New Call" will appear. A section displaying past calls will also appear.</p>
+        <p><b className='bold_info'>New Call Button</b>: While in manual mode, this button will appear after starting a new game. Each click produces a new call.</p>
         <p><b className='bold_info'>Auto Mode</b>: The computer will put calls on screen automatically every ( {chosenTime} ) seconds ( You can set the seconds from 1 second to 10 seconds )</p>
-        <p><b className='bold_info'>Manual Mode</b>: You will have to press the "New" button to display a new call</p>
-        <p><b className='bold_info'>Custom Bingo</b>: I created this to play bingo at home. We did not know theres certain numbers for each letter.
-           We just chose a max number to have on our card(we made them at home) and put the numbers randomly on the cards.
-           This option allows you and your family/friends to play with custom cards</p>
+        <p><b className='bold_info'>Manual Mode</b>: You will have to press the "New Call" button, to display a new call.</p>
+        <p><b className='bold_info'>Custom Bingo</b>: I created this to play bingo at home, without spending money. We did not know there are certain numbers for each letter.
+           We just chose a max number to have on our card (we made them at home) and put the numbers randomly on the cards.
+           This option allows you and your family/friends to play with custom cards like our family.</p>
         <p><b className='bold_info'>75-Ball Bingo</b>: Standard way of playing bingo. Each letter has a max number that can be called with it.
-           B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75</p>
+           B:1-15, I:16-30, N:31-45, G:46-60, O:61-75</p>
 
+      </div>
+      <div>
+      <a href="https://www.vecteezy.com/free-png/bingo">Bingo PNGs by Vecteezy</a>
       </div>
     </div>
   )
