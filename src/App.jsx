@@ -97,7 +97,7 @@ useEffect(() => {
         setBingoCall(call);
         setBingoHistory((prevHistory) => [...prevHistory, call]);
       } else if (bingoHistory.length < bingoMax * bingoLetters.length) {
-        console.log("Copy"); 
+        //console.log("Copy"); 
         getNewBingoCall(); // Retry if call is already in history
       } else {
         setIsDone(true); // Stop if all combinations are exhausted
@@ -124,12 +124,12 @@ useEffect(() => {
         setBingoCall(call);
         setBingoHistory((prevHistory) => [...prevHistory, call]);
         bingoHistorySet.delete(call);
-        console.log("Deleted: ", call);
+        //console.log("Deleted: ", call);
       }else if(bingoHistorySet.size >= 1){
-        console.log(call + " was not in the set. Getting a new call");
+        //console.log(call + " was not in the set. Getting a new call");
         getNewBingoCall();
       }else{
-        console.log("We went through the whole list");
+        //console.log("We went through the whole list");
         setIsDone(true);
       }
     }
