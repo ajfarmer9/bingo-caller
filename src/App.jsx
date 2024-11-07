@@ -208,6 +208,16 @@ useEffect(() => {
           }
         </div> 
       </div>
+      <div className='info_section'>
+        <p><b className='bold_info'>Auto Mode</b>: The computer will put calls on screen automatically every ( {chosenTime} ) seconds ( You can set the seconds from 1 second to 10 seconds )</p>
+        <p><b className='bold_info'>Manual Mode</b>: You will have to press the "New" button to display a new call</p>
+        <p><b className='bold_info'>Custom Bingo</b>: I created this to play bingo at home. We did not know theres certain numbers for each letter.
+           We just chose a max number to have on our card(we made them at home) and put the numbers randomly on the cards.
+           This option allows you and your family/friends to play with custom cards</p>
+        <p><b className='bold_info'>75-Ball Bingo</b>: Standard way of playing bingo. Each letter has a max number that can be called with it.
+           B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75</p>
+
+      </div>
     </div>
   )
 }
