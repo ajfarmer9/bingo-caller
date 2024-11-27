@@ -9,6 +9,7 @@ function App() {
   const [isDone, setIsDone] = useState(true);//if user stops current session
   const [showHistory, setShowHistory] = useState(false);//shows list of past calls for current session
   const [customBingo, setCustomBingo] = useState(true);//used to switch between custom bingo and standard
+  const [lastBingo, setLastBingo] = useState("custom");//used to tell if customBingo was changed
   const [possCombos] = useState([                   //This is for standard bingo
     "B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","B11","B12","B13","B14","B15",
     "I16","I17","I18","I19","I20","I21","I22","I23","I24","I25","I26","I27","I28","I29","I30",
@@ -25,7 +26,6 @@ function App() {
   
   useEffect(() => {
     if(!customBingo) setBingoMax(75);//if user changes to standard, set max number to 75
-    else setBingoMax(30);//otherwise set max to 30
 
     if (isDone || inManualMode) {//if user clicks stop, change to manual mode
       setBingoHistory([]);       //clear the history array
@@ -46,9 +46,7 @@ function App() {
           }
           return prevTime - 1;
         });
-      }
-        
-      
+      }  
     }, 1000);
 
     return () => clearInterval(intervalId);       //stop timer instance
@@ -60,6 +58,9 @@ function App() {
 
   const handleModeChange = (e) => { //switch between custom bingo and standard
     setCustomBingo(e.target.checked);  
+    if(customBingo) {
+      setBingoMax(30);
+    }
     if(!isDone){
       handleStopStartClick();
     }  
@@ -109,7 +110,6 @@ function App() {
         setBingoCall(call);
         setBingoHistory((prevHistory) => [...prevHistory, call]);
       } else if (bingoHistory.length < bingoMax * bingoLetters.length) {
-        //console.log("Copy"); 
         getNewBingoCall(); // Retry if call is already in history
       } else {
         setIsDone(true); // Stop if all combinations are exhausted
@@ -131,22 +131,17 @@ function App() {
           break;
       }
       call = `${letter}${randy}`;
-      if(bingoHistorySet.has(call)){
-        //console.log(call + " is not in the call history\n" + bingoHistory);
-        if(bingoHistory.includes(call)){
-          getNewBingoCall();
+      if(bingoHistorySet.has(call)){//is call in set?
+        if(bingoHistory.includes(call)){//is the call in the history array?
+          getNewBingoCall();//if so, get a new call
         }else{
-          setBingoCall(call);
+          setBingoCall(call);//if the call isnt in the history, display it and add to history
           setBingoHistory((prevHistory) => [...prevHistory, call]);
           bingoHistorySet.delete(call);
-        }
-        
-        //console.log("Deleted: ", call);
+        }      
       }else if(bingoHistorySet.size >= 1){
-        //console.log(call + " was not in the set. Getting a new call");
         getNewBingoCall();
       }else{
-        //console.log("We went through the whole list");
         setIsDone(true);
       }
     }
@@ -197,16 +192,15 @@ function App() {
       <div className='main_section'>
         <div className='call_controls'>
         {
-          isDone ? (<></>):(
-            
-          <div className='call_section'>
-            
-            {inManualMode ? 
-              (<button className="btn" onClick={()=>{getNewBingoCall()}}>New Call</button>):
+          isDone ? (<></>):(          
+            <div className='call_section'>
               
-              (<div className='timer_section'><p>Call in: {time} seconds</p><button className="btn" onClick={() => setIsPaused((prevPaused) => !prevPaused)}>{isPaused ? "Resume": "Pause"}</button></div>)
-            }
-          </div>)
+              {inManualMode ? 
+                (<button className="btn" onClick={()=>{getNewBingoCall()}}>New Call</button>):
+                
+                (<div className='timer_section'><p>Call in: {time} seconds</p><button className="btn" onClick={() => setIsPaused((prevPaused) => !prevPaused)}>{isPaused ? "Resume": "Pause"}</button></div>)
+              }
+            </div>)
         }
         <button className="btn start_btn" onClick={()=>{handleStopStartClick()}}>{isDone ? "Start": "Stop"}</button>
         </div>
@@ -218,22 +212,22 @@ function App() {
         isDone ? (<></>):(
 
           <div className='history_container'>
-        <div className='last_two_calls_section'>
-          <p className='l'>{bingoHistory[bingoHistory.length - 2] || ""}</p>
-          <p className='s'>{bingoHistory[bingoHistory.length - 3] || ""}</p>
+            <div className='last_two_calls_section'>
+              <p className='l'>{bingoHistory[bingoHistory.length - 2] || ""}</p>
+              <p className='s'>{bingoHistory[bingoHistory.length - 3] || ""}</p>
+            </div>
+            <div className='history_list_container'>
+              <button className="btn show_history" onClick={() => setShowHistory((prevShowHistory) => !prevShowHistory)}>
+                {showHistory ? "Hide": "Show"} History</button>
+              {
+                showHistory ? (<ul className='history_list'>
+                  {bingoHistory.slice().reverse().map((call, index) =>
+                    <li className='history_item' key={index}>{call}</li>
+                  )}
+                </ul>): (<></>)
+              }
+            </div> 
         </div>
-        <div className='history_list_container'>
-          <button className="btn show_history" onClick={() => setShowHistory((prevShowHistory) => !prevShowHistory)}>
-            {showHistory ? "Hide": "Show"} History</button>
-          {
-            showHistory ? (<ul className='history_list'>
-              {bingoHistory.slice().reverse().map((call, index) =>
-                <li className='history_item' key={index}>{call}</li>
-              )}
-            </ul>): (<></>)
-          }
-        </div> 
-      </div>
         )
       }
       
